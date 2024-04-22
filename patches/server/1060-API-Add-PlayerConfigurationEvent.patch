@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kyle Smith <kyleafmine@gmail.com>
+Date: Mon, 22 Apr 2024 03:19:41 -0300
+Subject: [PATCH] API: Add PlayerConfigurationEvent
+
+Adds an event that's fired when a player enters the protocol configuration state, useful
+for interop with mods or other low-level needs.
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
+index 87c5690774363edc1b7ebff10b041e48c0a6d56d..ebec2c9bed123bc2ce65ceb4d2323db017f97cb4 100644
+--- a/src/main/java/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
+@@ -79,6 +79,10 @@ public class ServerConfigurationPacketListenerImpl extends ServerCommonPacketLis
+         this.send(new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(layeredregistryaccess)));
+         this.addOptionalTasks();
+         this.configurationTasks.add(new JoinWorldTask());
++        // Paper Start - Add Player Configuration Event
++        var event = new com.destroystokyo.paper.event.player.PlayerConfigurationEvent(this.getCraftPlayer());
++        org.bukkit.Bukkit.getPluginManager().callEvent(event);
++        // Paper End - Add Player Configuration Event
+         this.startNextTask();
+     }
+ 
