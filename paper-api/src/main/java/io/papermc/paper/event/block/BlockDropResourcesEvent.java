@@ -10,11 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
-    Called when a block is about to drop items as a result of being broken
+    Called when a block is about to drop items
 
  <p>
     This event will be called once for every block broken, even if multiple blocks are broken simultaneously.
     For example, this event will be called twice when breaking a block with a torch on top.
+ </p>
+ <p>
+    This event will also be called when a block is dropping items as a result of being consumed, for example a cake dropping its candle after being eaten.
  </p>
  <p>
     If you do not need the drops of each individual block, use {@link org.bukkit.event.block.BlockBreakEvent}.
@@ -35,9 +38,6 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
     /**
      * Get the list of items to be dropped
      *
-     * <p>
-     *     If no items would have been dropped, this list will be empty.
-     * </p>
      * @return A mutable list of items to be dropped
      */
     public @NotNull List<ItemStack> getDrops() {
