@@ -85,8 +85,24 @@
 +
      public static void dropResources(final BlockState state, final Level level, final BlockPos pos) {
          if (level instanceof ServerLevel serverLevel) {
-             getDrops(state, serverLevel, pos, null).forEach(stack -> popResource(level, pos, stack));
-@@ -396,6 +_,12 @@
+-            getDrops(state, serverLevel, pos, null).forEach(stack -> popResource(level, pos, stack));
++            // Paper start - impl BlockDropResourcesEvent
++            List<ItemStack> drops = getDrops(state, serverLevel, pos, null);
++            List<org.bukkit.inventory.ItemStack> bukkitItems = new java.util.ArrayList<>();
++            for (ItemStack drop : drops) {
++                bukkitItems.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(drop));
++            }
++
++            io.papermc.paper.event.block.BlockDropResourcesEvent event = new io.papermc.paper.event.block.BlockDropResourcesEvent(org.bukkit.craftbukkit.block.CraftBlock.at(level, pos), bukkitItems);
++            if (event.callEvent()) {
++                drops = org.bukkit.craftbukkit.inventory.CraftItemStack.asNMSCopy(event.getDrops());
++                drops.forEach(stack -> popResource(level, pos, stack));
++            }
++            // Paper end - impl BlockDropResourcesEvent
+             state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
+         }
+     }
+@@ -400,6 +_,12 @@
          }
      }
  
