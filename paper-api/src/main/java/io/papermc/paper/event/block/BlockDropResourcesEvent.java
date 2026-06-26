@@ -5,7 +5,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.List;
 public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancelled;
-    private List<ItemStack> drops;
+    private final List<ItemStack> drops;
 
     @ApiStatus.Internal
     public BlockDropResourcesEvent(final @NotNull Block block, final List<ItemStack> drops) {
