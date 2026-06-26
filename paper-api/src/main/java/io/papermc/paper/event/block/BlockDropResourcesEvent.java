@@ -1,12 +1,14 @@
 package io.papermc.paper.event.block;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -27,12 +29,32 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancelled;
     private final List<ItemStack> drops;
+    private final Entity breaker;
+    private final ItemStack tool;
 
     @ApiStatus.Internal
-    public BlockDropResourcesEvent(final @NotNull Block block, final List<ItemStack> drops) {
+    public BlockDropResourcesEvent(final @NotNull Block block, final @NotNull List<ItemStack> drops, final @Nullable Entity breaker, final @Nullable ItemStack tool) {
         super(block);
         this.cancelled = false;
         this.drops = drops;
+        this.breaker = breaker;
+        this.tool = tool;
+    }
+
+    /**
+     * Get the entity that caused the block to drop resources
+     * @return The responsible entity, or null if no entity was involved
+     */
+    public @Nullable Entity getEntity() {
+        return breaker;
+    }
+
+    /**
+     * Get the tool used to break the block
+     * @return The tool used, or null
+     */
+    public @Nullable ItemStack getTool() {
+        return tool;
     }
 
     /**
@@ -40,7 +62,7 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
      *
      * @return A mutable list of items to be dropped
      */
-    public @NotNull List<ItemStack> getDrops() {
+    public @NotNull List<ItemStack> getItems() {
         return drops;
     }
 
@@ -58,7 +80,7 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
     public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;
     }
-    public static HandlerList getHandlerList() {
+    public @NotNull static HandlerList getHandlerList() {
         return HANDLER_LIST;
     }
 }
