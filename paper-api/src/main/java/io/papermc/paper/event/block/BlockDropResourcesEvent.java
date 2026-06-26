@@ -1,6 +1,7 @@
 package io.papermc.paper.event.block;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -31,14 +32,16 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
     private final List<ItemStack> drops;
     private final Entity breaker;
     private final ItemStack tool;
+    private final BlockState state;
 
     @ApiStatus.Internal
-    public BlockDropResourcesEvent(final @NotNull Block block, final @NotNull List<ItemStack> drops, final @Nullable Entity breaker, final @Nullable ItemStack tool) {
+    public BlockDropResourcesEvent(final @NotNull Block block, final @NotNull BlockState state, final @NotNull List<ItemStack> drops, final @Nullable Entity breaker, final @Nullable ItemStack tool) {
         super(block);
         this.cancelled = false;
         this.drops = drops;
         this.breaker = breaker;
         this.tool = tool;
+        this.state = state;
     }
 
     /**
@@ -64,6 +67,14 @@ public class BlockDropResourcesEvent extends BlockEvent implements Cancellable {
      */
     public @NotNull List<ItemStack> getItems() {
         return drops;
+    }
+
+    /**
+     * Get the block state of the block that is about to drop resources
+     * @return The block state
+     */
+    public @NotNull BlockState getBlockState() {
+        return state;
     }
 
     @Override

@@ -29,6 +29,7 @@ import net.minecraft.Optionull;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
@@ -2428,7 +2429,7 @@ public class CraftEventFactory {
         return event.getFuseTime();
     }
 
-    public static List<ItemStack> callBlockDropResourcesEvent(List<ItemStack> drops, LevelAccessor level, BlockPos pos, @Nullable Entity breaker, @Nullable ItemStack tool) {
+    public static List<ItemStack> callBlockDropResourcesEvent(List<ItemStack> drops, LevelAccessor level, BlockPos pos, net.minecraft.world.level.block.state.BlockState state, @Nullable Entity breaker, @Nullable ItemStack tool) {
         if (BlockDropResourcesEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return drops; // No listeners, skip event creation
         }
@@ -2438,7 +2439,15 @@ public class CraftEventFactory {
             converted.add(CraftItemStack.asCraftMirror(drop));
         }
 
-        var event = new BlockDropResourcesEvent(CraftBlock.at(level, pos), converted, breaker == null ? null : breaker.getBukkitEntity(), tool == null ? null : CraftItemStack.asCraftMirror(tool));
+        var stateSnapshot = CraftBlockStates.getBlockState(level, pos);
+        stateSnapshot.setBlock(state);
+
+        var event = new BlockDropResourcesEvent(
+            CraftBlock.at(level, pos),
+            stateSnapshot,
+            converted, breaker == null ? null : breaker.getBukkitEntity(),
+            tool == null ? null : CraftItemStack.asCraftMirror(tool))
+            ;
         if (event.callEvent()) {
             // convert items back
             return event.getItems().stream().map(CraftItemStack::asNMSCopy).toList();

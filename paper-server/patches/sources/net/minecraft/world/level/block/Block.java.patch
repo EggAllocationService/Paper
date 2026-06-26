@@ -86,7 +86,7 @@
      public static void dropResources(final BlockState state, final Level level, final BlockPos pos) {
          if (level instanceof ServerLevel serverLevel) {
 -            getDrops(state, serverLevel, pos, null).forEach(stack -> popResource(level, pos, stack));
-+            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, null), level, pos, null, null).forEach(stack -> popResource(level, pos, stack)); // Paper - implement BlockDropResourcesEvent
++            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, null), level, pos, state, null, null).forEach(stack -> popResource(level, pos, stack)); // Paper - implement BlockDropResourcesEvent
              state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
          }
      }
@@ -94,7 +94,7 @@
      public static void dropResources(final BlockState state, final LevelAccessor level, final BlockPos pos, final @Nullable BlockEntity blockEntity) {
          if (level instanceof ServerLevel serverLevel) {
 -            getDrops(state, serverLevel, pos, blockEntity).forEach(stack -> popResource(serverLevel, pos, stack));
-+            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, blockEntity), level, pos, null, null).forEach(stack -> popResource(serverLevel, pos, stack));  // Paper - implement BlockDropResourcesEvent
++            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, blockEntity), level, pos, state, null, null).forEach(stack -> popResource(serverLevel, pos, stack));  // Paper - implement BlockDropResourcesEvent
              state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
          }
      }
@@ -116,7 +116,7 @@
          if (level instanceof ServerLevel serverLevel) {
 -            getDrops(state, serverLevel, pos, blockEntity, breaker, tool).forEach(stack -> popResource(level, pos, stack));
 -            state.spawnAfterBreak(serverLevel, pos, tool, true);
-+            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, blockEntity, breaker, tool), level, pos, breaker, tool).forEach(stack -> popResource(level, pos, stack)); // Paper - implement BlockDropResourcesEvent
++            org.bukkit.craftbukkit.event.CraftEventFactory.callBlockDropResourcesEvent(getDrops(state, serverLevel, pos, blockEntity, breaker, tool), level, pos, state, breaker, tool).forEach(stack -> popResource(level, pos, stack)); // Paper - implement BlockDropResourcesEvent
 +            state.spawnAfterBreak(serverLevel, pos, tool, dropExperience); // Paper - Properly handle xp dropping
          }
      }
